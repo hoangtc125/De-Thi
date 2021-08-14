@@ -12,14 +12,23 @@ public class DocDuLieu {
         String string;
         int count = 0;
         while ((string = br.readLine()) != null) {
-        	System.out.println(string.substring(0, 4));
-            if(string.substring(0, 4).compareTo("Câu") == 0) {
-            	CauHoi c = new CauHoi();
-            	c.setDebai(string);
-            	cauHoi.add(c);
-            	count++;
+        	if(string.length() <= 1) {
+        		continue;
+        	}
+            if(string.substring(0, 4).compareTo("Câu ") == 0) {
+            	try {
+            		Integer.parseInt(string.charAt(4) + "");
+                 	CauHoi c = new CauHoi();
+                 	c.setDebai(string);
+                 	cauHoi.add(c);
+                 	count++;
+				} catch (Exception e) {
+					// TODO: handle exception
+					continue;
+				}
             }
-            if(string.charAt(0) == '*' || string.charAt(1) == '.') {
+            
+            if(string.charAt(0) == '*' || string.charAt(1) == '.' || string.charAt(1) == ')') {
         		DapAn d = new DapAn();
         		if(string.charAt(0) == '*') {
         			d.setString(string.substring(1));
