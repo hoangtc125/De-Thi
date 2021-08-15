@@ -6,14 +6,7 @@ public class CauHoi {
 	private String debai;
 	private ArrayList<DapAn> dapAn = new ArrayList<DapAn>();
 	private ArrayList<Integer> dapAnDung = new ArrayList<Integer>();
-	private int correct = 0;
-		
-	public int getCorrect() {
-		return correct;
-	}
-	public void setCorrect(int correct) {
-		this.correct = correct;
-	}
+	
 	public int getCorrectAnswer() {
 		return correctAnswer;
 	}

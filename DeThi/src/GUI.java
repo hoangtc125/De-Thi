@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -34,8 +35,8 @@ public class GUI implements ActionListener {
 	private JTextArea [] jtaDapAn = new JTextArea[10];
 	private final Action action = new SwingAction();
 	private ButtonGroup btnGroup = new ButtonGroup();
-	private int chooser;
-	private int current = 0;
+	private ArrayList<Integer> chooser = new ArrayList<Integer>();
+	private int current = 229;
 	private JButton btnNext = new JButton();
 	private JPanel choosePanel = new JPanel();
 
@@ -71,14 +72,13 @@ public class GUI implements ActionListener {
 		frame = new JFrame();
 		frame.setTitle("Câu hỏi ôn tập TTHCM");
 		frame.setAlwaysOnTop(true);
-		frame.setBounds(100, 100, 745, 581);
+		frame.setBounds(100, 100, 832, 572);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
 		
 		cauHoi = DocDuLieu.doc();
-		frame.getContentPane().add(jtaDeBai, BorderLayout.PAGE_START);
 		
-		JfdiemSo.setText("Score:" + score + "");
+		JfdiemSo.setText("Score: 0");
 		JfdiemSo.setEditable(false);
 		frame.getContentPane().add(JfdiemSo, BorderLayout.WEST);		
 		
@@ -92,6 +92,7 @@ public class GUI implements ActionListener {
 		frame.getContentPane().add(btnSubmit, BorderLayout.PAGE_END);
 		
 		display();
+
 	}
 	
 	private JRadioButton createRadioButton(String text, boolean select) {
@@ -112,50 +113,77 @@ public class GUI implements ActionListener {
 			}
 			for(int i = 0; i < cauHoi.get(current).getDapAnDung().size(); i++) {
 				jrDapAn[cauHoi.get(current).getDapAnDung().get(i)].setBackground(Color.green);
-				if(chooser == cauHoi.get(current).getDapAnDung().get(i)) {
-					cauHoi.get(current).setCorrect(1);
+			}
+			for(int i = 0; i < numberOfAnswers; i++) {
+				if(jrDapAn[i].isSelected()) {
+					chooser.add(i);
 				}
 			}
-			if(cauHoi.get(current).getCorrect() == 1) {
-				score++;
-				JfdiemSo.setText("score: " + score + "");
+			if(cauHoi.get(current).getCorrectAnswer() == chooser.size()) {
+				boolean mark = true;
+				for(int i = 0; i < chooser.size(); i++) {
+					if(!cauHoi.get(current).getDapAnDung().contains(chooser.get(i))) {
+						jrDapAn[chooser.get(i)].setBackground(Color.red);
+						mark = false;
+					}
+				}
+				if(mark) {
+					score++;
+					JfdiemSo.setText("Score: " + score);
+				}
 			} else {
-				jrDapAn[chooser].setBackground(Color.red);
+				for(int i = 0; i < chooser.size(); i++) {
+					if(!cauHoi.get(current).getDapAnDung().contains(chooser.get(i))) {
+						jrDapAn[chooser.get(i)].setBackground(Color.red);
+					}
+				}
 			}
 			btnSubmit.setEnabled(false);
 			btnNext.setEnabled(true);
 		}
 	}
 	
+	private String cutString(String string) {
+		StringBuilder stringBuilder = new StringBuilder();
+		int count = 1;
+		for(int i = 0; i < string.length(); i++) {
+			stringBuilder.append(string.charAt(i));
+			if(string.indexOf(" ", count * 140) == i) {
+				stringBuilder.append("\n");
+				count++;
+			}
+		}
+		return stringBuilder.toString();
+	}
+	
 	private void display() {
-		jtaDeBai.setText(cauHoi.get(current).getDebai());
+		jtaDeBai.setText(cutString(cauHoi.get(current).getDebai()) + (cauHoi.get(current).getCorrectAnswer() > 1 ? "\n(Có thể chọn nhiều hơn 1 đáp án)" : "\n(Chỉ chọn 1 đáp án)"));
 		jtaDeBai.setEditable(false);
-
+		
 		numberOfAnswers = cauHoi.get(current).getDapAn().size();
 		btnGroup = new ButtonGroup();
 		choosePanel.removeAll();
 		choosePanel = new JPanel(new GridLayout(numberOfAnswers, 1, 5, 5));
 		for(int i = 0; i < numberOfAnswers; i++) { 
-			choosePanel.add(jrDapAn[i] = createRadioButton(cauHoi.get(current).getDapAn().get(i).getString(), true));
-			btnGroup.add(jrDapAn[i]);
+			choosePanel.add(jrDapAn[i] = createRadioButton(cutString(cauHoi.get(current).getDapAn().get(i).getString()), false));
+			if(cauHoi.get(current).getCorrectAnswer() <= 1) {
+				btnGroup.add(jrDapAn[i]);
+			}
 		}
+		frame.getContentPane().add(jtaDeBai, BorderLayout.NORTH);
 		frame.getContentPane().add(choosePanel, BorderLayout.CENTER);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		for(int i = 0; i < numberOfAnswers; i++) {
-			if(jrDapAn[i].isSelected()) {
-				chooser = i;
-			}
-		}
 		if(e.getSource() == btnNext) {
 			current++;
 			for(int i = 0; i < numberOfAnswers; i++) {
 				jrDapAn[i].setBackground(Color.white);
 			}
 			display();
+			chooser = new ArrayList<Integer>();
 			btnSubmit.setEnabled(true);
 			btnNext.setEnabled(false);
 		}
