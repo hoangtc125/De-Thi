@@ -84,6 +84,7 @@ public class GUI implements ActionListener {
 		
 		btnNext = new JButton("Next");
 		btnNext.addActionListener(this);
+		btnNext.setEnabled(false);
 		frame.getContentPane().add(btnNext, BorderLayout.EAST);
 		
 		btnSubmit = new JButton("Submit");
@@ -106,22 +107,23 @@ public class GUI implements ActionListener {
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-			int mark = 0;
 			for(int i = 0; i < numberOfAnswers; i++) {
 				jrDapAn[i].setBackground(Color.white);
 			}
 			for(int i = 0; i < cauHoi.get(current).getDapAnDung().size(); i++) {
-				jrDapAn[i].setBackground(Color.green);
+				jrDapAn[cauHoi.get(current).getDapAnDung().get(i)].setBackground(Color.green);
 				if(chooser == cauHoi.get(current).getDapAnDung().get(i)) {
-					mark = 1;
+					cauHoi.get(current).setCorrect(1);
 				}
 			}
-			if(mark == 1) {
+			if(cauHoi.get(current).getCorrect() == 1) {
 				score++;
 				JfdiemSo.setText("score: " + score + "");
 			} else {
 				jrDapAn[chooser].setBackground(Color.red);
 			}
+			btnSubmit.setEnabled(false);
+			btnNext.setEnabled(true);
 		}
 	}
 	
@@ -131,6 +133,7 @@ public class GUI implements ActionListener {
 
 		numberOfAnswers = cauHoi.get(current).getDapAn().size();
 		btnGroup = new ButtonGroup();
+		choosePanel.removeAll();
 		choosePanel = new JPanel(new GridLayout(numberOfAnswers, 1, 5, 5));
 		for(int i = 0; i < numberOfAnswers; i++) { 
 			choosePanel.add(jrDapAn[i] = createRadioButton(cauHoi.get(current).getDapAn().get(i).getString(), true));
@@ -153,6 +156,8 @@ public class GUI implements ActionListener {
 				jrDapAn[i].setBackground(Color.white);
 			}
 			display();
+			btnSubmit.setEnabled(true);
+			btnNext.setEnabled(false);
 		}
 	}
 }

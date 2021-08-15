@@ -11,11 +11,13 @@ public class DocDuLieu {
   
         String string;
         int count = 0;
+        int index = 0;
         while ((string = br.readLine()) != null) {
         	if(string.length() <= 1) {
         		continue;
         	}
-            if(string.substring(0, 4).compareTo("Câu ") == 0) {
+
+            if(string.indexOf("Câu") >= 0 && string.substring(string.indexOf("Câu"), string.indexOf("Câu") + 4).compareTo("Câu ") == 0) {
             	try {
             		Integer.parseInt(string.charAt(4) + "");
                  	CauHoi c = new CauHoi();

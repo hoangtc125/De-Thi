@@ -4,9 +4,16 @@ import java.util.ArrayList;
 public class CauHoi {
 	private int correctAnswer;
 	private String debai;
-	ArrayList<DapAn> dapAn = new ArrayList<DapAn>();
-	ArrayList<Integer> dapAnDung = new ArrayList<Integer>();
-	
+	private ArrayList<DapAn> dapAn = new ArrayList<DapAn>();
+	private ArrayList<Integer> dapAnDung = new ArrayList<Integer>();
+	private int correct = 0;
+		
+	public int getCorrect() {
+		return correct;
+	}
+	public void setCorrect(int correct) {
+		this.correct = correct;
+	}
 	public int getCorrectAnswer() {
 		return correctAnswer;
 	}
