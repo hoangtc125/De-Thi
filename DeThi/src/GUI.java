@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -42,14 +43,17 @@ public class GUI implements ActionListener {
 			btnMenuNext = new JButton("Next Page"),
 			btnMenuPrev = new JButton("Previous Page");
 	private JPanel answerPanel = new JPanel(),
-					leftPanel = new JPanel(new BorderLayout()),
-					endLeftPanel = new JPanel();
+					rightPanel = new JPanel(new BorderLayout()),
+					centerRightPanel = new JPanel(new BorderLayout()),
+					endRightPanel = new JPanel();
 	private JButton [] btnNumber = new JButton[250];
 	private JPanel [] menuPanel = new JPanel[5];
 	private int	numberOfAnswers,
 				current = 0,
 				score = 0,
 				currentPage = 0;
+	private Font font = new Font("Aria", Font.BOLD, 20);
+	private ArrayList<Integer> doneAnswer = new ArrayList<Integer>();
 
 	/**
 	 * Launch the application.
@@ -90,8 +94,10 @@ public class GUI implements ActionListener {
 		
 		JfdiemSo.setText("Score: 0");
 		JfdiemSo.setEditable(false);
+		JfdiemSo.setFont(font);
+		JfdiemSo.setBackground(Color.white);
 		for(int i = 0; i < menuPanel.length; i++) {
-			menuPanel[i] = new JPanel(new GridLayout(10, 5, 5, 5));
+			menuPanel[i] = new JPanel(new GridLayout(10, 5, 0, 0));
 		}
 		for(int i = 0; i < btnNumber.length; i++) {
 			btnNumber[i] = new JButton((i + 1) + "");
@@ -103,37 +109,42 @@ public class GUI implements ActionListener {
 		btnMenuPrev.setBackground(Color.white);
 		btnMenuNext.addActionListener(this);
 		btnMenuNext.setBackground(Color.white);
-		leftPanel.add(menuPanel[currentPage], BorderLayout.CENTER);
-		leftPanel.add(JfdiemSo, BorderLayout.PAGE_START);
-		endLeftPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-//		endLeftPanel.add(new JLabel());
-		endLeftPanel.add(btnMenuPrev);
-//		endLeftPanel.add(new JLabel());
-		endLeftPanel.add(btnMenuNext);
-//		endLeftPanel.add(new JLabel());
-		leftPanel.add(endLeftPanel, BorderLayout.PAGE_END);
-		leftPanel.setPreferredSize(new Dimension(300, 500));
-		frame.getContentPane().add(leftPanel, BorderLayout.WEST);		
+//		rightPanel.add(menuPanel[currentPage], BorderLayout.CENTER);
+		rightPanel.add(centerRightPanel, BorderLayout.CENTER);
+		rightPanel.add(JfdiemSo, BorderLayout.PAGE_START);
+		endRightPanel = new JPanel(new GridLayout(3, 1, 0, 0));
+		endRightPanel.setBackground(Color.white);
+//		endRightPanel.add(new JLabel(" "));
+		endRightPanel.add(new JLabel(" Page sẽ tự sang trang kế khi làm qua câu cuối cùng"));
+//		endRightPanel.add(btnMenuPrev);
+		endRightPanel.add(new JLabel(" "));
+//		endRightPanel.add(btnMenuNext);
+		endRightPanel.add(new JLabel(" "));
+		rightPanel.add(endRightPanel, BorderLayout.PAGE_END);
+		rightPanel.setPreferredSize(new Dimension(300, 500));
+		frame.getContentPane().add(rightPanel, BorderLayout.EAST);		
 
 		btnSubmit.setAction(action);
 		btnSubmit.setBackground(Color.white);
+		btnSubmit.setFont(font);
 		btnNext.addActionListener(this);
 		btnNext.setEnabled(false);
 		btnNext.setBackground(Color.white);
+		btnNext.setFont(font);
 		btnPrev.addActionListener(this);
 		btnPrev.setBackground(Color.white);
 		btnPrev.setEnabled(false);
-		JPanel endPanel = new JPanel(new GridLayout(1, 5, 5, 5));
-		endPanel.add(new JLabel());
+		btnPrev.setFont(font);
+		JPanel endPanel = new JPanel(new GridLayout(1, 5, 0, 0));
+		endPanel.setBackground(Color.white);
 		endPanel.add(btnPrev);
-		endPanel.add(new JLabel());
 		endPanel.add(btnSubmit);
-		endPanel.add(new JLabel());
 		endPanel.add(btnNext);
-		endPanel.add(new JLabel());
+//		endPanel.add(new JLabel("Page sẽ tự sang trang kế khi làm qua câu cuối cùng"));
 		frame.getContentPane().add(endPanel, BorderLayout.PAGE_END);
 		
 		display();
+		displayPage();
 		frame.setBounds(100, 100, 1200, 600);
 	}
 	
@@ -149,7 +160,7 @@ public class GUI implements ActionListener {
 		int count = 1;
 		for(int i = 0; i < string.length(); i++) {
 			stringBuilder.append(string.charAt(i));
-			if(string.indexOf(" ", count * 140) == i) {
+			if(string.indexOf(" ", count * 110) == i) {
 				stringBuilder.append("\n");
 				count++;
 			}
@@ -158,16 +169,20 @@ public class GUI implements ActionListener {
 	}
 	
 	private void display() {
-		jtaDeBai.setText(cutString(cauHoi.get(current).getDebai()) + (cauHoi.get(current).getCorrectAnswer() > 1 ? "\n(Có thể chọn nhiều hơn 1 đáp án)" : "\n(Chỉ chọn 1 đáp án)"));
+		
+		jtaDeBai.setText(cutString(cauHoi.get(current).getDebai()) + (cauHoi.get(current).getCorrectAnswer() > 1 ? "\n\n(Có thể chọn nhiều hơn 1 đáp án)" : "\n\n(Chỉ chọn 1 đáp án)"));
 		jtaDeBai.setEditable(false);
+		jtaDeBai.setFont(font);
 		btnNumber[current].setBackground(Color.yellow);
 		
 		numberOfAnswers = cauHoi.get(current).getDapAn().size();
 		btnGroup = new ButtonGroup();
 		answerPanel.removeAll();
-		answerPanel = new JPanel(new GridLayout(numberOfAnswers, 1, 5, 5));
+		answerPanel = new JPanel(new GridLayout(numberOfAnswers, 1, 0, 0));
+		answerPanel.setBackground(Color.white);
 		for(int i = 0; i < numberOfAnswers; i++) { 
-			answerPanel.add(jrDapAn[i] = createRadioButton(cutString(cauHoi.get(current).getDapAn().get(i).getString()), false));
+			answerPanel.add(jrDapAn[i] = createRadioButton(cutString(cauHoi.get(current).getDapAn().get(i).getString().trim()), false));
+			jrDapAn[i].setFont(font);
 			if(cauHoi.get(current).getCorrectAnswer() <= 1) {
 				btnGroup.add(jrDapAn[i]);
 			}
@@ -177,12 +192,13 @@ public class GUI implements ActionListener {
 	}
 	
 	private void displayPage() {
-		leftPanel.removeAll();
-		leftPanel = new JPanel(new BorderLayout());
-		leftPanel.add(JfdiemSo, BorderLayout.PAGE_START);
-		leftPanel.add(endLeftPanel, BorderLayout.PAGE_END);
-		leftPanel.add(menuPanel[currentPage], BorderLayout.CENTER);
-		frame.getContentPane().add(leftPanel, BorderLayout.WEST);
+		centerRightPanel.removeAll();
+		centerRightPanel = new JPanel(new GridLayout(10, 5, 0, 0));
+		centerRightPanel.setBackground(Color.white);
+		for(int i = 50 * currentPage; i < 50 * currentPage + 50; i++) {
+			centerRightPanel.add(btnNumber[i]);
+		}
+		rightPanel.add(centerRightPanel, BorderLayout.CENTER);
 	}
 	
 	private void setUp() {
@@ -202,6 +218,7 @@ public class GUI implements ActionListener {
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
+			doneAnswer.add(current);
 			for(int i = 0; i < numberOfAnswers; i++) {
 				jrDapAn[i].setBackground(Color.white);
 			}
@@ -253,12 +270,20 @@ public class GUI implements ActionListener {
 		if(e.getSource() == btnNext && current < 250) {
 			current++;
 			setUp();
+			if(current / 50 > currentPage) {
+				currentPage++;
+				displayPage();
+			}
 		}
 		if(e.getSource() == btnPrev && current > 0) {
 			current--;
 			setUp();
+			if(current / 50 < currentPage) {
+				currentPage--;
+				displayPage();
+			}
 		}
-		if(e.getSource() == btnMenuNext && currentPage < 5) {
+		if(e.getSource() == btnMenuNext && currentPage < 4) {
 			currentPage++;
 			displayPage();
 		}
@@ -268,9 +293,17 @@ public class GUI implements ActionListener {
 		}
 		for(int i = 0; i < btnNumber.length; i++) {
 			if(e.getSource() == btnNumber[i]) {
+				if(current == i) break;
 				btnNumber[current].setBackground(Color.white);
 				current = i;
 				setUp();
+			}
+		}
+		for(int i = 0; i < numberOfAnswers; i++) {
+			if(jrDapAn[i].isSelected()) {
+				jrDapAn[i].setBackground(Color.yellow);
+			} else {
+				jrDapAn[i].setBackground(Color.white);
 			}
 		}
 	}

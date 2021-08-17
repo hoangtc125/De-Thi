@@ -13,13 +13,12 @@ public class DocDuLieu {
         int count = 0;
         int index = 0;
         while ((string = br.readLine()) != null) {
-        	if(string.length() <= 1) {
+        	if(string.length() <= 0) {
         		continue;
         	}
-
             if(string.indexOf("Câu") >= 0 && string.substring(string.indexOf("Câu"), string.indexOf("Câu") + 4).compareTo("Câu ") == 0) {
             	try {
-            		Integer.parseInt(string.charAt(4) + "");
+            		Integer.parseInt(string.charAt(4 + string.indexOf("Câu")) + "");
                  	CauHoi c = new CauHoi();
                  	c.setDebai(string);
                  	cauHoi.add(c);
