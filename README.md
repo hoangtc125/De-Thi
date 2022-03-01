@@ -10,6 +10,7 @@
 Để chuyển từ ngân hàng đề thi trên các file text, yêu cầu với file text:
 - Các đáp án đúng phải được đánh kí hiện `*` ở đầu
 - Câu hỏi phải bắt đầu bằng từ `Câu`
+
 Nếu các đáp án đúng được không có sẵn `*` mà được bôi đậm thì có thể chuyển đổi như sau:
 - Copy văn bản vào Excel liên tục vào 2 cột
 - Chọn 1 cột và thực hiện chức năng Replace với điều kiện dòng có Font `Bold` thì chuyển thành `*`, còn lại chuyển thành rỗng
